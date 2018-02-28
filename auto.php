@@ -1,26 +1,33 @@
 <?php
 $str = $_GET['str'];
 
-define("INITIAL_STATE", 0);
-define("FINAL_STATE", 2);
+class Node {
+  public $name;
+  public $go_to;
+  public $state;
+
+  function __construct($name, $go_to, $state) {
+    $this->name = $name;
+    $this->go_to = $go_to;
+    if(isset($state)) {
+      $this->state = $state;
+    }
+  }
+}
+
 class Automata {
     public $states = array();
-    public $cur_state = NULL;
-    public $initial_state = NULL;
-    public $final_state = NULL;
+    public $currentState = NULL;
+    public $initialState = NULL;
 
-    public function add_state($name, $go_to, $state = 1) {
-      if($state == INITIAL_STATE) $this->initial_state = $this->cur_state = $name;
-      if($state == FINAL_STATE) $this->final_state = $name;
-      $this->states[$name] = array(
-        'state' => $state,
-        'go_to' => $go_to
-      );
+    public function addState($state) {
+      if($state->state['initial']) $this->initialState = $this->currentState = $state;
+      $this->states[$state->name] = $state;
     }
 
-    public function next_state($l) {
-      if(isset( $this->states[$this->cur_state]['go_to'][$l] )) {
-        $this->cur_state = $this->states[$this->cur_state]['go_to'][$l];
+    public function nextState($l) {
+      if(isset( $this->states[$this->currentState->name]->go_to[$l] )) {
+        $this->currentState = $this->states[ $this->states[$this->currentState->name]->go_to[$l] ];
         return true;
       } else {
         return false;
@@ -30,18 +37,17 @@ class Automata {
     public function can($str) {
       $ok = true;
       for($i=0; $i<strlen($str) && $ok; $i++) {
-        $ok = $this->next_state($str[$i]);
+        $ok = $this->nextState($str[$i]);
       }
 
-      if($ok && $this->cur_state == $this->final_state) return 'YES';
+      if($ok && $this->currentState->state['final']) return 'YES';
       else return 'NO';
     }
 }
 
 $auto = new Automata;
-$auto->add_state('s', array('b'=>'s', 'a'=>'p'), INITIAL_STATE);
-$auto->add_state('p', array('b'=>'q', 'a'=>'p'));
-$auto->add_state('q', array('b'=>'s', 'a'=>'r'));
-$auto->add_state('r', array('b'=>'r', 'a'=>'r'), FINAL_STATE);
+$auto->addState( new Node('0', array('a' => '1', 'b' => '0'), array('initial' => true, 'final' => true)) );
+$auto->addState( new Node('1', array('a' => '2','b' => '0'), array('initial' => false, 'final' => true)) );
+$auto->addState( new Node('2', array('a' => '2', 'b' => '2'), array('initial' => false, 'final' => false)) );
 
 print_r( $auto->can($str) );
