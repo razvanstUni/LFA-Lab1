@@ -1,23 +1,5 @@
 <?php
 /*
-Define a class for each state
-*/
-
-class Node {
-  public $name;
-  public $goTo;
-  public $state;
-
-  function __construct($name, $goTo, $state) {
-    $this->name = $name;
-    $this->goTo = $goTo;
-    if(isset($state)) {
-      $this->state = $state;
-    }
-  }
-}
-
-/*
 Define the Automaton class with the 3 main functions:
 - Add new state
 - Move to the next state
@@ -61,16 +43,3 @@ class Automaton {
       else return false;
     }
 }
-
-/*
-Dummy input data for an Automaton
-*/
-
-$str = $_GET['str']; //Get the string via an URL parameter
-
-$auto = new Automaton;
-$auto->addState( new Node('0', array('a' => '1', 'b' => '0'), array('initial' => true, 'final' => true)) );
-$auto->addState( new Node('1', array('a' => '2','b' => '0'), array('initial' => false, 'final' => true)) );
-$auto->addState( new Node('2', array('a' => '2', 'b' => '2'), array('initial' => false, 'final' => false)) );
-
-if( $auto->can($str) ) print 'YES'; else print 'NO';
