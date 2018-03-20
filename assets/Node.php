@@ -4,9 +4,9 @@ Define a class for each state
 */
 
 class Node {
-  public $name;
+  private $name;
   public $goTo;
-  public $state;
+  private $state;
 
   function __construct($name, $goTo, $state) {
     $this->name = $name;
@@ -14,5 +14,31 @@ class Node {
     if(isset($state)) {
       $this->state = $state;
     }
+  }
+
+  /**
+   * [getName description]
+   * @return string
+   */
+  public function getName() {
+    return $this->name;
+  }
+
+/**
+ * [isFinal description]
+ * @return boolean
+ */
+  public function isFinal() {
+    if($this->state['final']) return true;
+    return false;
+  }
+
+/**
+ * [isInitial description]
+ * @return boolean
+ */
+  public function isInitial() {
+    if($this->state['initial']) return true;
+    return false;
   }
 }

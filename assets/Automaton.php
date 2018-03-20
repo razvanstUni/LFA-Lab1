@@ -10,28 +10,36 @@ class Automaton {
     public $currentState = NULL; //The current state of the Automaton
     public $initialState = NULL; //The state from where the Automaton starts working
 
-    /*
-      A function that get's a Node object (representing a new state for the Automaton)
+   /**
+    * [addState description]
+    * A function that get's a Node object (representing a new state for the Automaton)
+    * @param Node object $state
     */
     public function addState($state) {
-      if($state->state['initial']) $this->initialState = $this->currentState = $state;
-      $this->states[$state->name] = $state;
+      if($state->isInitial()) $this->initialState = $this->currentState = $state;
+      $this->states[$state->getName()] = $state;
     }
 
-    /*
-      A function that change the current state of the Automaton
+   /**
+    * [nextState description]
+    * A function that change the current state of the Automaton
+    * @param char $l
+    * @return boolean
     */
     public function nextState($l) {
-      if(isset( $this->states[$this->currentState->name]->goTo[$l] )) {
-        $this->currentState = $this->states[ $this->states[$this->currentState->name]->goTo[$l] ];
+      if(isset( $this->states[$this->currentState->getName()]->goTo[$l] )) {
+        $this->currentState = $this->states[ $this->states[$this->currentState->getName()]->goTo[$l] ];
         return true;
       } else {
         return false;
       }
     }
 
-    /*
-      A function that check to see if a string is accepted by the Automaton
+   /**
+    * [can description]
+    * A function that check to see if a string is accepted by the Automaton
+    * @param  string $str
+    * @return boolean
     */
     public function can($str) {
       $ok = true;
@@ -39,7 +47,7 @@ class Automaton {
         $ok = $this->nextState($str[$i]);
       }
 
-      if($ok && $this->currentState->state['final']) return true;
+      if($ok && $this->currentState->isFinal()) return true;
       else return false;
     }
 }
