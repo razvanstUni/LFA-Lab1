@@ -27,8 +27,12 @@ class Automaton {
     * @return boolean
     */
     public function nextState($l) {
-      if(isset( $this->states[$this->currentState->getName()]->goTo[$l] )) {
-        $this->currentState = $this->states[ $this->states[$this->currentState->getName()]->goTo[$l] ];
+      if( $this->states[$this->currentState->getName()]->getPath($l) !== false ) {
+        if($this->currentState->isAFN($l)) {
+          
+          return false;
+        }
+        $this->currentState = $this->states[ $this->states[$this->currentState->getName()]->getPath($l)[0] ];
         return true;
       } else {
         return false;

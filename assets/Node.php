@@ -5,7 +5,7 @@ Define a class for each state
 
 class Node {
   private $name;
-  public $goTo;
+  private $goTo;
   private $state;
 
   function __construct($name, $goTo, $state) {
@@ -22,6 +22,28 @@ class Node {
    */
   public function getName() {
     return $this->name;
+  }
+
+/**
+ * [isAFN description]
+ * @param  char  $char
+ * @return boolean
+ */
+  public function isAFN($char) {
+    if(count($goTo[$char]) > 1)
+      return true;
+      return false;
+  }
+
+  /**
+   * [getPath description]
+   * @param  char $char
+   * @return boolean/char
+   */
+  public function getPath($char) {
+    if(isset( $this->goTo[$char] ))
+      return $this->goTo[$char];
+    return false;
   }
 
 /**
