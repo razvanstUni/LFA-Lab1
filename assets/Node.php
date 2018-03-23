@@ -30,7 +30,7 @@ class Node {
  * @return boolean
  */
   public function isAFN($char) {
-    if(count($goTo[$char]) > 1)
+    if(count($this->goTo[$char]) > 1)
       return true;
       return false;
   }

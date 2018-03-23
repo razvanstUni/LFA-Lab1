@@ -6,9 +6,9 @@ Define the Automaton class with the 3 main functions:
 - Check a string to see if it's accepted by the Automaton
 */
 class Automaton {
-    public $states = array(); //A list with all the states
-    public $currentState = NULL; //The current state of the Automaton
-    public $initialState = NULL; //The state from where the Automaton starts working
+    private $states = array(); //A list with all the states
+    private $currentState = NULL; //The current state of the Automaton
+    private $initialState = NULL; //The state from where the Automaton starts working
 
    /**
     * [addState description]
@@ -26,13 +26,17 @@ class Automaton {
     * @param char $l
     * @return boolean
     */
-    public function nextState($l) {
-      if( $this->states[$this->currentState->getName()]->getPath($l) !== false ) {
+    public function nextState($l, $str) {
+      if( $this->currentState->getPath($l) !== false ) {
         if($this->currentState->isAFN($l)) {
-          
-          return false;
+          $path = $this->currentState->getPath($l);
+          for($i = 1; $i <= count($path); $i++) {
+            $newAutomaton = clone $this;
+            $newAutomaton->can($str);
+          }
+          return true;
         }
-        $this->currentState = $this->states[ $this->states[$this->currentState->getName()]->getPath($l)[0] ];
+        $this->currentState = $this->states[ $this->currentState->getPath($l)[0] ];
         return true;
       } else {
         return false;
@@ -47,11 +51,16 @@ class Automaton {
     */
     public function can($str) {
       $ok = true;
+      /*while(strlen($this->str) && $ok) {
+        $char = $this->str[0];
+        $this->str = substr($this->str, 1);
+        $ok = $this->nextState($char);
+      }*/
       for($i=0; $i<strlen($str) && $ok; $i++) {
-        $ok = $this->nextState($str[$i]);
+        $ok = $this->nextState($str[$i], $str);
       }
 
       if($ok && $this->currentState->isFinal()) return true;
-      else return false;
+      return false;
     }
 }
